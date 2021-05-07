@@ -14,11 +14,12 @@ from random import *
 from turtle import *
 from freegames import path
 
-car = path('car.gif')
+car = path('car.gif') 
 tiles = list(range(32)) * 2
 state = {'mark': None}
 hide = [True] * 64
 click_count = 0
+end = False
 change_tiles = False
 
 def square(x, y):
@@ -45,25 +46,35 @@ def tap(x, y):
     "Update mark and hidden tiles based on tap."
     global click_count
     global change_tiles
+    global end
     spot = index(x, y)
     mark = state['mark']
 
     if y<168:
         if mark is None or mark == spot or tiles[mark] != tiles[spot]:
             state['mark'] = spot
-            click_count +=1 
+            if not end:
+                click_count +=1 
         else:
             hide[spot] = False
             hide[mark] = False
             state['mark'] = None
     else:
         change_tiles = not change_tiles
+
 def draw():
     "Draw image and tiles."
     global click_count
+    global end
     clear()
     goto(0, -30)
     shape(car)
+    if True not in hide:
+        end = True
+        text = "gg ganaste con " + str(click_count) + " intentos"  
+
+    else:
+        text = "numero de intentos: "+ str(click_count) 
     stamp()
     up()
     goto(-197, 173)
@@ -72,7 +83,7 @@ def draw():
     begin_fill()
 
     for count in range(2):
-        forward(240)
+        forward(320)
         left(90)
         forward(60)
         left(90)
@@ -92,11 +103,11 @@ def draw():
         goto(x + 27, y)
         color('black')
         write(tiles[mark], font=('Arial', 30, 'normal'), align='center')
+    
     up()
-    goto(-75, 190)
+    goto(-35, 190)
     down()
-    write("numero de clicks: "+ str(click_count), font=('Arial', 18, 'normal'), align='center')
-     
+    write(text, font=('Arial', 18, 'normal'), align='center')
     update()
     ontimer(draw, 100)
 
