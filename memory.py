@@ -45,10 +45,9 @@ def tap(x, y):
     "Update mark and hidden tiles based on tap."
     global click_count
     global change_tiles
-    print(x,y, change_tiles, click_count)
     spot = index(x, y)
     mark = state['mark']
-    
+
     if y<168:
         if mark is None or mark == spot or tiles[mark] != tiles[spot]:
             state['mark'] = spot
@@ -61,11 +60,25 @@ def tap(x, y):
         change_tiles = not change_tiles
 def draw():
     "Draw image and tiles."
+    global click_count
     clear()
     goto(0, -30)
     shape(car)
     stamp()
+    up()
+    goto(-197, 173)
+    down()
+    color('black','white')
+    begin_fill()
 
+    for count in range(2):
+        forward(240)
+        left(90)
+        forward(60)
+        left(90)
+    
+    end_fill()
+    
     for count in range(64):
         if hide[count]:
             x, y = xy(count)
@@ -76,10 +89,14 @@ def draw():
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-        goto(x + 2, y)
+        goto(x + 27, y)
         color('black')
-        write(tiles[mark], font=('Arial', 30, 'normal'))
-
+        write(tiles[mark], font=('Arial', 30, 'normal'), align='center')
+    up()
+    goto(-75, 190)
+    down()
+    write("numero de clicks: "+ str(click_count), font=('Arial', 18, 'normal'), align='center')
+     
     update()
     ontimer(draw, 100)
 
