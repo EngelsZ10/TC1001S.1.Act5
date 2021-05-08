@@ -17,17 +17,27 @@ from freegames import path
 car = path('car.gif') 
 tiles = list(range(32)) * 2
 state = {'mark': None}
-hide = [False] * 64
-click_count = 100
+hide = [True] * 64
+click_count = 0
 end = False
 change_tiles = False
+colores = ['#FFFFFF', '#000000', '#006400',  '#8B0000', '#0000CD', 
+	   '#4B0082', '#191970', '#FF0000', '#8B4513', '#2F4F4F',
+	   '#DC143C', '#FF4500', '#C71585', '#9400D3', '#008B8B',
+	   '#6B8E23', '#696969', '#B8860B', '#FF1493', '#CD5C5C',
+	   '#CC6666', '#00FF00', '#6A5ACD', '#FF8C00', '#FF6347',
+	   '#00FFFF', '#FFFF00', '#FFC0CB', '#98FB98', '#FFD700',
+	   '#66CDAA', '#DEB887', 'blue']
 
-def square(x, y):
+def square(x, y, txt):
     "Draw white square with black outline at (x, y)."
+    global change_tiles
     up()
     goto(x, y)
     down()
-    color('black', 'white')
+    if not change_tiles:
+        txt = 'white'
+    color('black', txt)
     begin_fill()
     for count in range(4):
         forward(50)
@@ -72,13 +82,12 @@ def draw():
     if True not in hide:
         end = True
         text = "gg ganaste con " + str(click_count) + " intentos"  
-
     else:
         text = "numero de intentos: "+ str(click_count) 
     stamp()
-    up()
+    penup()
     goto(-197, 173)
-    down()
+    pendown()
     color('black','white')
     begin_fill()
 
@@ -88,26 +97,42 @@ def draw():
         forward(60)
         left(90)
     
+    penup()
+    goto(125, 173)
+    pendown()
+    
+    for count in range(2):
+        forward(60)
+        left(90)
+        forward(60)
+        left(90)
+
     end_fill()
     
     for count in range(64):
         if hide[count]:
-            x, y = xy(count)
-            square(x, y)
+            x, y = xy(count) 
+            square(x, y, 'white')
 
     mark = state['mark']
 
     if mark is not None and hide[mark]:
         x, y = xy(mark)
+        square(x, y, colores[tiles[mark]])
         up()
         goto(x + 27, y)
         color('black')
         write(tiles[mark], font=('Arial', 30, 'normal'), align='center')
     
-    up()
+    penup()
     goto(-35, 190)
-    down()
+    pendown()
     write(text, font=('Arial', 18, 'normal'), align='center')
+    penup()
+    goto(157, 177)
+    pendown()
+    write("click me \nto add \ncolor", font=('Arial', 10, 'normal'), align='center')
+
     update()
     ontimer(draw, 100)
 
